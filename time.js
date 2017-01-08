@@ -3,7 +3,7 @@
 var exports = module.exports = {};
 
 exports.parseTime = function(_message) {
-  const timeRE = /([12]?\d):(\d\d) ?([apAP][mM]?)?|(1?\d)([apAP][mM]?)/
+  const timeRE = /(\d?\d):(\d\d) ?([apAP][mM]?)?|(1?\d)([apAP][mM]?)/
   const matches = timeRE.exec(_message)
 
   if (matches == null) return null
@@ -13,6 +13,8 @@ exports.parseTime = function(_message) {
   var ampm = matches[3] != undefined ? matches[3] : matches[5]
 
   if (isNaN(hours)) return null
+  if (hours > 23) return null
+  if ((hours == 0 || hours > 12) && ampm != undefined) return null
 
   if (ampm == undefined) {
     if ((hours >= 8 && hours < 12) || hours == 0) {
