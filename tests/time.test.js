@@ -74,6 +74,21 @@ describe('timeOfDay parsing', () => {
     expect(sut('123')).toBeNull()
     expect(sut('abc')).toBeNull()
   })
+
+  it('returns null for 24h times with am/pm attached', () => {
+    expect(sut('0:30am')).toBeNull()
+    expect(sut('22:30pm')).toBeNull()
+    expect(sut('18:00am')).toBeNull()
+  })
+
+  it('returns null for invalid 24h times', () => {
+    expect(sut('26:30')).toBeNull()
+    expect(sut('24:00')).toBeNull()
+  })
+
+  it('returns null for things that look like times but are out of range', () => {
+    expect(sut('30:00')).toBeNull()
+  })
 })
 
 describe('applyOffsetToTime', () => {
