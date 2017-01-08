@@ -1,7 +1,5 @@
 'use strict';
 
-// todo: refactor with promises and compact closure syntax
-
 // todo: handle case where user who sent the message is not a member of the channel (specifically look up their TZ too)
 // todo: caching of channel membership and user info - slack node sdk has some in memory store
 // todo: anchor to beginning of line or space; and ending with space or punctuation or line end
@@ -16,57 +14,51 @@ const token = process.env.SLACK_BOT_TOKEN || '';
 const rtm = new RtmClient(token)
 const web = new WebClient(token)
 
-rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
+rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
   console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}`)
 })
 
-rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
+rtm.on(RTM_EVENTS.MESSAGE, (message) => {
   const localTime = Time.parseTime(message.text)
-  if (localTime === null) { return }
+  if (localTime === null) return
 
-  web.channels.info(message.channel, function(err, channelResponse) {
-    if (err) {
-      console.log('Error:', err)
-    } else {
-      const channel = channelResponse.channel
+  web.channels.info(message.channel).then((channelResponse) => {
+    const channel = channelResponse.channel
 
-      Promise.all(channel.members.map(function(each) { return web.users.info(each) }))
-      .then(function(userResponses) {
-        const users = userResponses.map(function(response) { return(response.user) })
+    Promise.all(channel.members.map((each) => { return web.users.info(each) })).then((userResponses) => {
+      const users = userResponses.map((response) => { return(response.user) })
 
-        var targetZones = []
-        var localZone
+      var targetZones = []
+      var localZone
 
-        users.forEach(function(user) {
-          if (user.is_bot === true) return
+      users.forEach((user) => {
+        if (user.is_bot === true) return
 
-          const userZone = {
-            'tz_label': user.tz_label,
-            'tz_offset': user.tz_offset
-          }
+        const userZone = {
+          'tz_label': user.tz_label,
+          'tz_offset': user.tz_offset
+        }
 
-          if (user.id == message.user) {
-            localZone = userZone
-          } else if (!targetZones.includes(userZone)) {
-            targetZones.push(userZone)
-          }
-        })
-
-        targetZones.sort(function(a, b) {
-          return a.tz_offset - b.tz_offset
-        })
-
-        var reply = `*${Time.formatTime(localTime)}* in ${localZone.tz_label} is:`
-        targetZones.forEach(function(zone) {
-          const offsetFromLocal = zone.tz_offset - localZone.tz_offset
-          reply = reply + `\n${Time.formatTime(Time.applyOffsetToTime(localTime, offsetFromLocal))} in ${zone.tz_label}`
-        })
-
-        rtm.sendMessage(reply, message.channel)
+        if (user.id == message.user) {
+          localZone = userZone
+        } else if (!targetZones.includes(userZone)) {
+          targetZones.push(userZone)
+        }
       })
-    }
-  })
 
+      targetZones.sort((a, b) => {
+        return a.tz_offset - b.tz_offset
+      })
+
+      var reply = `*${Time.formatTime(localTime)}* in ${localZone.tz_label} is:`
+      targetZones.forEach((zone) => {
+        const offsetFromLocal = zone.tz_offset - localZone.tz_offset
+        reply = reply + `\n${Time.formatTime(Time.applyOffsetToTime(localTime, offsetFromLocal))} in ${zone.tz_label}`
+      })
+
+      rtm.sendMessage(reply, message.channel)
+    })
+  })
 })
 
 rtm.start()
