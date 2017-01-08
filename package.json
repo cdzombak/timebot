@@ -9,6 +9,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "SLACK_BOT_TOKEN=`cat token.txt` node index.js"
   },
   "author": "Chris Dzombak",
   "license": "MPL-2.0"
