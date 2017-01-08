@@ -66,7 +66,7 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
       var localZone
 
       users.forEach((user) => {
-        if (user.is_bot === true) return
+        if (user.is_bot) return
 
         const userZone = {
           'tz_label': user.tz_label,
