@@ -89,6 +89,25 @@ describe('timeOfDay parsing', () => {
   it('returns null for things that look like times but are out of range', () => {
     expect(sut('30:00')).toBeNull()
   })
+
+  it('parses time-looking things at beginning of a sentence', () => {
+    expect(sut('1:30pm is the appointment')).toEqual([13, 30])
+  })
+
+  it('parses time-looking things at end of a sentence', () => {
+    expect(sut('the appointment is 1:30pm')).toEqual([13, 30])
+  })
+
+  it('parses time-looking things in the middle of a sentence', () => {
+    expect(sut('I made a 1:30pm appointment')).toEqual([13, 30])
+  })
+
+  it("doesn't parse time-looking things inside other strings", () => {
+    expect(sut('xyzzy1:30')).toBeNull()
+    expect(sut('221:30')).toBeNull()
+    expect(sut('1:30xyzzy')).toBeNull()
+    expect(sut('at1:30xyzzy')).toBeNull()
+  })
 })
 
 describe('applyOffsetToTime', () => {
