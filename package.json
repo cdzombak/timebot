@@ -4,7 +4,8 @@
   "description": "Talk seamlessly across timezones in Slack.",
   "main": "index.js",
   "dependencies": {
-    "@slack/client": "^3.8.1"
+    "@slack/client": "^3.8.1",
+    "node-cache": "^4.1.1"
   },
   "devDependencies": {
     "jest": "^18.1.0"
