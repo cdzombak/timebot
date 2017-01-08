@@ -21,8 +21,15 @@ function getChannelInfo(channelID) {
     console.log(`Got cached info for channel ${channelID}`)
     return Promise.resolve(cached)
   } else {
-    return web.channels.info(channelID).then((response) => {
-      const channelInfo = response.channel
+    return web.channels.info(channelID).catch((error) => {
+      if (error.message == 'channel_not_found') {
+        console.log(`[DEBUG] ${channelID} may be a private channel; trying to look that up…`)
+        return web.groups.info(channelID)
+      } else {
+        console.log(`Cannot recover from error looking up ${channelID}: ${error}`)
+      }
+    }).then((response) => {
+      const channelInfo = response.channel != undefined ? response.channel : response.group
       cache.set(channelID, channelInfo, channelCacheTTL)
       return channelInfo
     })
@@ -50,6 +57,8 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
 rtm.on(RTM_EVENTS.MESSAGE, (message) => {
   const localTime = Time.parseTime(message.text)
   if (localTime === null) return
+
+  console.log(`[DEBUG] Got message with time ${Time.formatTime(localTime)} in channel ${message.channel}`)
 
   getChannelInfo(message.channel).then((channel) => {
     var usersToLookup = channel.members.slice(0)
