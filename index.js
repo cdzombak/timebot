@@ -1,7 +1,5 @@
 'use strict';
 
-// todo: improve names
-// todo: cleanup time.js impl
 // todo: refactor with promises and compact closure syntax
 
 // todo: handle case where user who sent the message is not a member of the channel (specifically look up their TZ too)
@@ -9,8 +7,8 @@
 // todo: anchor to beginning of line or space; and ending with space or punctuation or line end
 
 const RtmClient = require('@slack/client').RtmClient;
-const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
-const RTM_EVENTS = require('@slack/client').RTM_EVENTS;
+  const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
+  const RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 const WebClient = require('@slack/client').WebClient;
 const Time = require('./time')
 
@@ -23,45 +21,45 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
 })
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
-  const time = Time.parseTime(message.text)
-  if (time === null) { return }
+  const localTime = Time.parseTime(message.text)
+  if (localTime === null) { return }
 
-  web.channels.info(message.channel, function(err, res) {
+  web.channels.info(message.channel, function(err, channelResponse) {
     if (err) {
       console.log('Error:', err)
     } else {
-      const channel = res.channel
+      const channel = channelResponse.channel
 
       Promise.all(channel.members.map(function(each) { return web.users.info(each) }))
-      .then(function(responses) {
-        const users = responses.map(function(response) { return(response.user) })
+      .then(function(userResponses) {
+        const users = userResponses.map(function(response) { return(response.user) })
 
-        var zonesForTranslation = []
-        var originalZone
+        var targetZones = []
+        var localZone
 
         users.forEach(function(user) {
-          if (user.is_bot === true) { return }
+          if (user.is_bot === true) return
 
-          const userTimezone = {
-            "tz_label": user.tz_label,
-            "tz_offset": user.tz_offset
+          const userZone = {
+            'tz_label': user.tz_label,
+            'tz_offset': user.tz_offset
           }
 
           if (user.id == message.user) {
-            originalZone = userTimezone
-          } else if (!zonesForTranslation.includes(userTimezone)) {
-            zonesForTranslation.push(userTimezone)
+            localZone = userZone
+          } else if (!targetZones.includes(userZone)) {
+            targetZones.push(userZone)
           }
         })
 
-        zonesForTranslation.sort(function(a, b) {
+        targetZones.sort(function(a, b) {
           return a.tz_offset - b.tz_offset
         })
 
-        var reply = `*${Time.formatTime(time)}* in ${originalZone.tz_label} is:`
-        zonesForTranslation.forEach(function(zone) {
-          const offsetFromOriginal = zone.tz_offset - originalZone.tz_offset
-          reply = reply + `\n${Time.formatTime(Time.applyOffsetToTime(time, offsetFromOriginal))} in ${zone.tz_label}`
+        var reply = `*${Time.formatTime(localTime)}* in ${localZone.tz_label} is:`
+        targetZones.forEach(function(zone) {
+          const offsetFromLocal = zone.tz_offset - localZone.tz_offset
+          reply = reply + `\n${Time.formatTime(Time.applyOffsetToTime(localTime, offsetFromLocal))} in ${zone.tz_label}`
         })
 
         rtm.sendMessage(reply, message.channel)
