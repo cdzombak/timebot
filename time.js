@@ -3,7 +3,7 @@
 var exports = module.exports = {};
 
 exports.parseTime = function(_message) {
-  const timeRE = /(\d?\d):(\d\d) ?([apAP][mM]?)?|(1?\d)([apAP][mM]?)/
+  const timeRE = /\b(\d?\d):(\d\d) ?([apAP][mM]?)?\b|\b(1?\d)([apAP][mM]?)\b/
   const matches = timeRE.exec(_message)
 
   if (matches == null) return null

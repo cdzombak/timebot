@@ -1,7 +1,6 @@
 'use strict';
 
 // todo: caching of channel membership and user info - slack node sdk has some in memory store
-// todo: anchor to beginning of line or space; and ending with space or punctuation or line end
 
 const RtmClient = require('@slack/client').RtmClient;
   const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
