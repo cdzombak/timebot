@@ -1,6 +1,5 @@
 'use strict';
 
-// todo: handle case where user who sent the message is not a member of the channel (specifically look up their TZ too)
 // todo: caching of channel membership and user info - slack node sdk has some in memory store
 // todo: anchor to beginning of line or space; and ending with space or punctuation or line end
 
@@ -25,7 +24,12 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
   web.channels.info(message.channel).then((channelResponse) => {
     const channel = channelResponse.channel
 
-    Promise.all(channel.members.map((each) => { return web.users.info(each) })).then((userResponses) => {
+    var usersToLookup = channel.members.slice(0)
+    if (!usersToLookup.includes(message.user)) {
+      usersToLookup.push(message.user)
+    }
+
+    Promise.all(usersToLookup.map((each) => { return web.users.info(each) })).then((userResponses) => {
       const users = userResponses.map((response) => { return(response.user) })
 
       var targetZones = []
