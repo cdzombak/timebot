@@ -1,14 +1,20 @@
 {
   "name": "timebot",
   "version": "0.1.0",
-  "description": "Work seamlessly across imezones in Slack.",
+  "description": "Talk seamlessly across imezones in Slack.",
   "main": "index.js",
   "dependencies": {
     "@slack/client": "^3.8.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^18.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cdzombak/timebot.git"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
     "start": "SLACK_BOT_TOKEN=`cat token.txt` node index.js"
   },
   "author": "Chris Dzombak",
