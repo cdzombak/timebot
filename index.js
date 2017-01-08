@@ -19,9 +19,7 @@ function getChannelInfo(channelID) {
   const cached = cache.get(channelID)
   if (cached != undefined) {
     console.log(`Got cached info for channel ${channelID}`)
-    return new Promise((resolve, reject) => {
-      resolve(cached)
-    })
+    return Promise.resolve(cached)
   } else {
     return web.channels.info(channelID).then((response) => {
       const channelInfo = response.channel
@@ -35,9 +33,7 @@ function getUserInfo(userID) {
   const cached = cache.get(userID)
   if (cached != undefined) {
     console.log(`Got cached info for user ${userID}`)
-    return new Promise((resolve, reject) => {
-      resolve(cached)
-    })
+    return Promise.resolve(cached)
   } else {
     return web.users.info(userID).then((response) => {
       const userInfo = response.user
