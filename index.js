@@ -92,6 +92,8 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
           'tz_offset': user.tz_offset
         }
 
+        if (userZone.tz_offset == undefined || userZone.tz_label == undefined) return
+
         if (user.id == message.user) {
           localZone = userZone
         } else {
