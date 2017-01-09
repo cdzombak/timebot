@@ -50,6 +50,20 @@ function getUserInfo(userID) {
   }
 }
 
+function pushUniqueZone(zones, zone) {
+  if (zones.find((element, idx, array) => { return element.tz_offset == zone.tz_offset }) == undefined) {
+    zones.push(zone)
+  }
+}
+
+function removeZone(zones, zone) {
+  const idx = zones.findIndex((element, idx, array) => { return element.tz_offset == zone.tz_offset })
+  console.log(idx)
+  if (idx > -1) {
+    zones.splice(idx, 1)
+  }
+}
+
 rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
   console.log(`Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}`)
 })
@@ -80,10 +94,12 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
 
         if (user.id == message.user) {
           localZone = userZone
-        } else if (!targetZones.includes(userZone)) {
-          targetZones.push(userZone)
+        } else {
+          pushUniqueZone(targetZones, userZone)
         }
       })
+
+      removeZone(targetZones, localZone)
 
       targetZones.sort((a, b) => {
         return a.tz_offset - b.tz_offset
