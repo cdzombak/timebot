@@ -20,9 +20,9 @@ describe('timeOfDay parsing', () => {
     expect(sut('3pm')).toEqual([15, 0])
   })
 
-  it('parses hour-only times with a/p', () => {
-    expect(sut('11a')).toEqual([11, 0])
-    expect(sut('11P')).toEqual([23, 0])
+  it('does not parse hour-only times with a/p', () => {
+    expect(sut('11a')).toBeNull()
+    expect(sut('11P')).toBeNull()
   })
 
   it('parses uppercase am/pm', () => {
