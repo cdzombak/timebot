@@ -15,11 +15,11 @@ Once you’ve added **timebot** to a channel, it listens for mentions of times i
 3. Run `npm start`
 4. Invite timebot to one or more channels
 
-See also [the FAQ](docs/faq.md).
+*See also* [the FAQ](docs/faq.md).
 
-## FAQ
+## FAQ & Troubleshooting
 
-See: [the FAQ](docs/faq.md).
+*See:* [the FAQ](docs/faq.md).
 
 ## License
 
