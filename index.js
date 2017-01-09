@@ -51,13 +51,13 @@ function getUserInfo(userID) {
 }
 
 function pushUniqueZone(zones, zone) {
-  if (zones.find((element, idx, array) => { return element.tz_offset == zone.tz_offset }) == undefined) {
+  if (zones.find((element, idx, array) => { return element.tz_label == zone.tz_label }) == undefined) {
     zones.push(zone)
   }
 }
 
 function removeZone(zones, zone) {
-  const idx = zones.findIndex((element, idx, array) => { return element.tz_offset == zone.tz_offset })
+  const idx = zones.findIndex((element, idx, array) => { return element.tz_label == zone.tz_label })
   console.log(idx)
   if (idx > -1) {
     zones.splice(idx, 1)
