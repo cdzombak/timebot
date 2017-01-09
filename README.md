@@ -2,7 +2,7 @@
 
 *Talk seamlessly across timezones in Slack.*
 
-Slack knows your timezone, and those of your coworkers, since you’ve all set it in your Slack profile.
+Slack knows your timezone, and those of your coworkers, since you’ve all set it in your Slack profiles.
 
 Once you’ve added **timebot** to a channel, it listens for mentions of times in that channel, and automagically translates times into the correct timezone for everyone else in the channel:
 
