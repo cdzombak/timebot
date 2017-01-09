@@ -102,6 +102,8 @@ rtm.on(RTM_EVENTS.MESSAGE, (message) => {
 
       removeZone(targetZones, localZone)
 
+      if (targetZones.length == 0) return
+
       targetZones.sort((a, b) => {
         return a.tz_offset - b.tz_offset
       })
