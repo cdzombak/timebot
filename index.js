@@ -11,8 +11,6 @@ const token = process.env.SLACK_BOT_TOKEN || '';
 const rtm = new RtmClient(token)
 const web = new WebClient(token)
 
-const channelCacheTTL = 1 * 60 * 60 // 1 hour, in seconds
-const userCacheTTL = 4 * 60 * 60 // 4 hours, in seconds
 const cache = new NodeCache({ stdTTL: 30*60, checkperiod: 15*60 });
 
 function getChannelInfo(channelID) {
@@ -30,6 +28,7 @@ function getChannelInfo(channelID) {
       }
     }).then((response) => {
       const channelInfo = response.channel != undefined ? response.channel : response.group
+      const channelCacheTTL = 1 * 60 * 60 // 1 hour, in seconds
       cache.set(channelID, channelInfo, channelCacheTTL)
       return channelInfo
     })
@@ -44,6 +43,7 @@ function getUserInfo(userID) {
   } else {
     return web.users.info(userID).then((response) => {
       const userInfo = response.user
+      const userCacheTTL = 4 * 60 * 60 // 4 hours, in seconds
       cache.set(userID, userInfo, userCacheTTL)
       return userInfo
     })
