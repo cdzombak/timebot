@@ -13,6 +13,7 @@ Once you’ve added **timebot** to a channel, it listens for mentions of times i
 1. Clone the repo and run `npm install`
 2. [Create a bot token](https://get.slack.help/hc/en-us/articles/215770388-Create-and-regenerate-API-tokens) in Slack. Put it in `token.txt`. (“Seamlessly translates times for everyone in the channel.” is a nice thing to put in the “What this bot does” field.)
 3. Run `npm start`
+4. Invite timebot to one or more channels
 
 ## License
 
