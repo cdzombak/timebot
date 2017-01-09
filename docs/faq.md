@@ -23,3 +23,7 @@ Strictly speaking, no. The bot uses Slack’s real time messaging API, which is 
 ## Does it parse time zones attached to times, like “1:00pm EST”?
 
 No, not currently.
+
+## What time formats does it parse?
+
+See [the tests](https://github.com/cdzombak/timebot/blob/master/tests/time.test.js#L5).
