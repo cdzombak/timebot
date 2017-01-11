@@ -70,6 +70,7 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, (rtmStartData) => {
 rtm.on(RTM_EVENTS.MESSAGE, (message) => {
   const localTime = Time.parseTime(message.text)
   if (localTime === null) return
+  if (message.subtype == 'file_share') return
 
   console.log(`[DEBUG] Got message with time ${Time.formatTime(localTime)} in channel ${message.channel}`)
 
