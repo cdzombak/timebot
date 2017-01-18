@@ -9,10 +9,22 @@ Timebot monitors new messages posted to the channels you’ve invited it to. Whe
 3. It then lists the time zones for everyone else in the channel, and calculates the _current_ offset between their local time zone and the sender’s time zone.
 4. Those offsets are used to translate the time for others in the channel.
 
+## How do I create a bot user/token?
+
+It’s not exactly obvious in Slack how to do this. So:
+
+1. Go to https://my.slack.com/apps/manage/custom-integrations and click “Build” in the upper right corner
+2. Then click on “Make a Custom Integration”
+3. And _then_ select Bots
+
 ## It’s giving a response that includes a time zone we didn’t expect, or the response doesn’t include a time zone we did expect.
 
 - Be sure that everyone in the channel has set the correct time zone in their Slack profile.
 - Channel membership information is cached for an hour. If someone in a new time zone just joined (or left) a channel, timebot thus might not notice for an hour. Restarting timebot will clear that cache.
+
+## It seems like timebot didn’t pick on on the time zones for everyone in the channel.
+
+Remember that timebot caches user info, including time zones, for 4 hours. If people are adjusting their time zones frequently (eg. when you first set up timebot), try restarting timebot to clear the cache.
 
 ## Do I have to host the bot on a server that’s publicly accessible?
 
